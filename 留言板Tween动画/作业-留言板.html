@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>留言板</title>
+		<link rel="stylesheet" type="text/css" href="css/animate.css" />
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			img {
+				vertical-align: top;
+			}
+			
+			ul {
+				list-style: none;
+			}
+			
+			body {
+				background: url(img/bleck.jpg) no-repeat fixed top left;
+				padding-top: 30px;
+				color: white;
+				font-size: 20px;
+			}
+			
+			.wrap {
+				width: 850px;
+				background: rgba(0, 0, 0, .5);
+				margin: 0 auto;
+				padding: 10px 25px 10px;
+				position: relative;
+				border-radius: 5px;
+			}
+			
+			h2 {
+				text-align: center;
+				color: white;
+				margin-bottom: 5px;
+			}
+			
+			#name,
+			#msg {
+					
+				border: none;
+				outline: none;
+				border-radius: 5px;
+				background: rgba(255, 255, 255, .4);
+				font-size: 16px;
+				padding: 5px;
+				color: navajowhite;
+			}
+			
+			#name {
+				width: 200px;
+				height: 22px;
+				vertical-align: top;
+				margin-bottom: 20px;
+			}
+			
+			#msg {
+				width: 780px;
+				height: 100px;
+				vertical-align: top;
+				margin-bottom: 50px;
+			}
+			
+			#btn {
+				position: absolute;
+				right: 25px;
+				top: 220px;
+				width: 80px;
+				height: 28px;
+				border: none;
+				outline: none;
+				border-radius: 5px;
+				font-size: 18px;
+				line-height: 28px;
+				padding: 0;
+			}
+			
+			#show {
+				overflow: hidden;
+			}
+			
+			#show li {
+				margin: 10px 0;
+				background: rgba(255, 255, 255, .2);
+				border-radius: 6px;
+				padding: 0 15px;
+				position: relative;
+				overflow: hidden;
+				height: 0;
+			}
+			
+			.name {
+				width: 400px;
+				height: 40px;
+				font-size: 18px;
+				line-height: 40px;
+				color: deepskyblue;
+			}
+			
+			.content {
+				width: 100%;
+				font-size: 16px;
+				letter-spacing: 1.5px;
+				text-indent: 2em;
+				line-height: 22px;
+			}
+			
+			.floor {
+				font-size: 12px;
+				text-align: right;
+				margin-top: 10px;
+				margin-bottom: 5px;
+				color: gainsboro;
+			}
+			
+			.time {
+				margin-right: 20px;
+			}
+			
+			.del {
+				width: 60px;
+				height: 20px;
+				position: absolute;
+				top: 12px;
+				right: 15px;
+				border: none;
+				background: rgba(250, 235, 215, .7);
+				color: darkred;
+				border-radius: 4px;
+				outline: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<h2>留言板</h2>
+			<!--输入区-->
+			<div id="input">
+				姓名：<textarea id="name" placeholder="请输入姓名" rows="" cols=""></textarea><br /> 内容：
+				<textarea id="msg" placeholder="请输入内容" rows="" cols=""></textarea><br />
+				<button id="btn">提交</button>
+			</div>
+			<ul id="show">
+				<!--<li></li>-->
+				<!--<li><p class='name'>"+named.value+"</p>
+					<p class='content'>"+msg.value+"测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
+					<p class="floor">
+						<span class="time">发表于2012-1-3 22：10：11</span>
+						<span>第100层</span>          
+					</p>
+				</li>-->
+			</ul>
+		</div>
+
+		<script src="js/tween.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var show = document.getElementById("show");
+			var named = document.getElementById("name");
+			var msg = document.getElementById("msg");
+			var push = document.getElementById("btn");
+			var index = 1;
+			var timer;
+			var turn = true; //处理连续点击出现的bug
+			push.onclick = addMsg; //点击提交按钮触发增加文字函数
+			//增加函数
+			function addMsg() {
+				if (named.value == "" || msg.value == "") {
+					alert("请完善内容");
+				} else {
+					if (turn) {
+						//创建时间 获得发表时间
+						var time = new Date();
+						var year = time.getFullYear();
+						var month = time.getMonth();
+						var day = time.getDate();
+						var hour = time.getHours();
+						var minute = time.getMinutes();
+						var second = time.getSeconds();
+						//创建一个新的li标签
+						var li = document.createElement("li");
+						//创建一个名称的P标签
+						var pName = document.createElement("p");
+						pName.className = "name";
+						pName.innerHTML = named.value;
+						li.appendChild(pName);
+						//创建一个内容的P标签					
+						var pMsg = document.createElement("p");
+						pMsg.className = "content";
+						pMsg.innerHTML = msg.value;
+						li.appendChild(pMsg);
+						//创建一个时间的P标签
+						var pFloor = document.createElement("p");
+						pFloor.className = "floor";
+						pFloor.innerHTML = "<span class='time'>发表于" + year + "-" + month + "-" + day + "  " + hour + ":" + minute + ":" + second + "</span><span>第" + index + "层</span>";
+						li.appendChild(pFloor);
+						//创建一个删除按钮的button标签
+						var del = document.createElement("button");
+						del.className = "del";
+						del.innerText = "删除";
+						li.appendChild(del);
+						var lis = show.firstElementChild;
+						show.insertBefore(li, lis);
+						index++;
+						turn = false;
+						//使用Tween的下滑动画
+						var t = 0,
+							d = 20;
+						var b = 0;
+						var c = pName.offsetHeight + pMsg.offsetHeight + pFloor.offsetHeight + 20;
+						timer = setInterval(function() {
+								t++;
+								if (t == d) {
+									turn = true;
+									clearInterval(timer);
+								}
+								li.style.height = Tween.Linear(t, b, c, d) + "px";
+							}, 30)
+							//给每一个增加的按钮绑定点击事件
+						var time;
+						del.onclick = deleted;
+
+						function deleted() {
+							var a = confirm("确认要删除吗？");
+							if (a) {
+								var t2 = 0,
+									d2 = 20;
+								var b2 = pName.offsetHeight + pMsg.offsetHeight + pFloor.offsetHeight + 20;
+								var c2 = -b2;
+								clearInterval(time);
+								time = setInterval(function() {
+									t2++;
+									if (t2 == d2) {
+										clearInterval(time);
+									}
+									li.style.height = Tween.Linear(t2, b2, c2, d2) + "px";
+								}, 25)
+								setTimeout(function() {
+									show.removeChild(li);
+								}, 500)
+							}
+						}
+					} else {
+						alert("请勿频繁提交！")
+					}
+				}
+			}
+		</script>
+	</body>
+
+</html>
